@@ -116,6 +116,7 @@ def playing():
                         pause_menu = True
 
             board.draw_squares(SCREEN)
+            board.draw_pieces(SCREEN)
             pygame.display.update()
         else:
 
