@@ -60,7 +60,7 @@ class Piece:
     
 
     def check_collision(self, piece2):
-        return None            print(self.coords[idx])
+        return None
     
     
     def move(self):
