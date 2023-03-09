@@ -5,13 +5,12 @@ from .constants import WIDTH, HEIGHT
 
 class Piece:
     def __init__(self, row, col, angle, color, shape):
-        # used to generate the piece
-        # information to store
         self.color = color
         self.selected = False
         self.coords = []
-        self.calc_coords(row, col, angle, shape) #list of coordinates the shape occupies
+        self.calc_coords(row, col, angle, shape) # List of coordinates the shape occupies
 
+    # Calculates all the coordinates for the blocks needed to position the piece
     def calc_coords(self,row,col,angle, shape):
 
         self.coords = shape[:]
@@ -20,13 +19,14 @@ class Piece:
         if angle != 0:
             self.rotate_piece(angle, 0)
 
-        #temporary
+        #Moving the object to correct location
         for idx in range(len(self.coords)):
             self.coords[idx] = [self.coords[idx][0]+row,self.coords[idx][1]+col]
     
-
+    # Rotates the piece and fix the coordinates so that it can be better positioned on the board
     def rotate_piece(self, angle, invert):
-        #get size of shape to fix coordinates after rotating
+
+        # Get size of shape to fix coordinates after rotating
         x_fix_value = y_fix_value = 0
         for coord in self.coords:
             if coord[0] > x_fix_value:
@@ -36,12 +36,12 @@ class Piece:
 
         rot_angle = -math.radians(angle % 360)
 
-        #rotate the piece
+        # Rotate the piece
         for idx in range(len(self.coords)):
-            self.coords[idx] = [self.coords[idx][0]*math.cos(rot_angle) - self.coords[idx][1]*math.sin(rot_angle),
-                                self.coords[idx][0]*math.sin(rot_angle) + self.coords[idx][1]*math.cos(rot_angle)]
+            self.coords[idx] = [round(self.coords[idx][0]*math.cos(rot_angle) - self.coords[idx][1]*math.sin(rot_angle)),
+                                round(self.coords[idx][0]*math.sin(rot_angle) + self.coords[idx][1]*math.cos(rot_angle))]
             
-        #fix coordinates after rotation
+        # Fix coordinates after rotation
         if angle == 90:
             x_fix, y_fix = 0, y_fix_value
         elif angle == 180:
@@ -60,17 +60,16 @@ class Piece:
     
 
     def check_collision(self, piece2):
-        return None
+        return None            print(self.coords[idx])
     
     
     def move(self):
         return None
-        #check if it can move (from every single coordinate)
+        #check if it can move (from every single coordinate -> to the position of movement)
 
         #move every single coordinate
     
     def draw(self, win, square_size):
-        
         for coord in self.coords:
             pygame.draw.rect(win, self.color, (coord[0]*square_size,MENUS_HEIGHT+coord[1]*square_size,square_size,square_size))
 
