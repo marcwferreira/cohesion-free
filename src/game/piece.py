@@ -2,6 +2,7 @@ import pygame
 import math
 from .constants import RED, GREEN, BLUE, YELLOW, SQUARE_SIZE, MENUS_HEIGHT
 from .constants import WIDTH, HEIGHT
+from .utils import addEles, manhattanDist
 
 class Piece:
     def __init__(self, row, col, angle, color, shape):
@@ -71,40 +72,24 @@ class Piece:
     def remove_select(self):
         self.selected = False
 
-    def group_shapes(self, shape2): #idk if this the best way of doing this
-        return None
+    def group_shapes(self, shape2):
+        self.coords.extend(shape2.coords)
     
-
+    # Check if two pieces are touching each other
     def check_collision(self, piece2):
-        return None
-    
+        if self.color == piece2.color:
+            for coord1 in self.coords:
+                for coord2 in piece2.coords:
+                    if manhattanDist(coord1,coord2) <= 1: 
+                        self.group_shapes(piece2)
+                        return True
     
     def move(self,direction):
-       if direction == 'down':
-        #dumb way to do it
-        for idx in range(len(self.coords)):
-            self.coords[idx] = [self.coords[idx][0],self.coords[idx][1]+1]
-        #check if it can move (from every single coordinate -> to the position of movement)
-
-       if direction == 'up':
-        #dumb way to do it
-        for idx in range(len(self.coords)):
-            self.coords[idx] = [self.coords[idx][0],self.coords[idx][1]-1]
-        #check if it can move (from every single coordinate -> to the position of movement)
-
-       if direction == 'right':
-        #dumb way to do it
-        for idx in range(len(self.coords)):
-            self.coords[idx] = [self.coords[idx][0]+1,self.coords[idx][1]] 
-        #check if it can move (from every single coordinate -> to the position of movement)
-
-       if direction == 'left':
-        #dumb way to do it
-        for idx in range(len(self.coords)):
-            self.coords[idx] = [self.coords[idx][0]-1,self.coords[idx][1]] 
-        #check if it can move (from every single coordinate -> to the position of movement)
-
-        #move every single coordinate
+        dir_add = -1 if (direction == 'left' or direction == 'up') else 1
+        if direction == 'up' or direction == 'down':
+            self.coords = list(map(addEles,self.coords,([[0,dir_add]]*len(self.coords))))
+        elif direction == 'left' or direction == 'right':
+            self.coords = list(map(addEles,self.coords,([[dir_add,0]]*len(self.coords))))
     
     def draw(self, win, square_size):
         for coord in self.coords:

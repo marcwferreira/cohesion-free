@@ -1,5 +1,7 @@
 import pygame
 
+pygame.font.init()
+
 WIDTH, HEIGHT = 600, 800
 MENUS_HEIGHT = 100
 ROWS, COLS = 4,4 #this is a test -> it will be not fixed
@@ -16,6 +18,9 @@ GREY = (128, 128, 128)
 DARK_GREY = (50, 50, 50)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+
+#game font 
+title_font=pygame.font.SysFont("monospace", 30)
 
 #pieces shapes
 S_SHAPE = [[0,1],[0,2],[1,1],[2,0],[2,1]]
