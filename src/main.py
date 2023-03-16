@@ -67,10 +67,22 @@ def play_config():
                         board_size += 1
                 if random_button.check_click():
                     run = False
-                    game_state =GameState.PLAYING
+                    game_state = GameState.PLAYING
                 elif return_button.check_click():
                     run = False
                     game_state = GameState.MAIN_MENU
+                if one_button.check_click():
+                    run = False
+                    game_state = GameState.PLAYING
+                if two_button.check_click():
+                    run = False
+                    game_state = GameState.PLAYING
+                if three_button.check_click():
+                    run = False
+                    game_state = GameState.PLAYING
+                if four_button.check_click():
+                    run = False
+                    game_state = GameState.PLAYING
 
 
         SCREEN.blit(title_text, (WIDTH/2-title_rect.width/2, 100))
