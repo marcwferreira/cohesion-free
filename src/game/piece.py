@@ -86,6 +86,24 @@ class Piece:
             self.coords[idx] = [self.coords[idx][0],self.coords[idx][1]+1]
         #check if it can move (from every single coordinate -> to the position of movement)
 
+       if direction == 'up':
+        #dumb way to do it
+        for idx in range(len(self.coords)):
+            self.coords[idx] = [self.coords[idx][0],self.coords[idx][1]-1]
+        #check if it can move (from every single coordinate -> to the position of movement)
+
+       if direction == 'right':
+        #dumb way to do it
+        for idx in range(len(self.coords)):
+            self.coords[idx] = [self.coords[idx][0]+1,self.coords[idx][1]] 
+        #check if it can move (from every single coordinate -> to the position of movement)
+
+       if direction == 'left':
+        #dumb way to do it
+        for idx in range(len(self.coords)):
+            self.coords[idx] = [self.coords[idx][0]-1,self.coords[idx][1]] 
+        #check if it can move (from every single coordinate -> to the position of movement)
+
         #move every single coordinate
     
     def draw(self, win, square_size):
