@@ -54,6 +54,22 @@ class Piece:
         for idx in range(len(self.coords)):
             self.coords[idx] = [self.coords[idx][0]+x_fix,self.coords[idx][1]+y_fix]
 
+    # Check if the piece was clicked
+    def check_click(self,square_size):
+        mouse_pos = pygame.mouse.get_pos() #check mouse position
+        left_click = pygame.mouse.get_pressed()[0] #check pressed button on mouse
+        for coord in self.coords:
+            button_rect = pygame.rect.Rect((coord[0]*square_size,MENUS_HEIGHT+coord[1]*square_size),(square_size, square_size))
+            #check if when left mouse button is pressed on mouse it is on top of button
+            if left_click and button_rect.collidepoint(mouse_pos):
+                self.selected = True
+                return True
+            else:
+               continue
+        return False
+            
+    def remove_select(self):
+        self.selected = False
 
     def group_shapes(self, shape2): #idk if this the best way of doing this
         return None
@@ -63,8 +79,11 @@ class Piece:
         return None
     
     
-    def move(self):
-        return None
+    def move(self,direction):
+       if direction == 'down':
+        #dumb way to do it
+        for idx in range(len(self.coords)):
+            self.coords[idx] = [self.coords[idx][0],self.coords[idx][1]+1]
         #check if it can move (from every single coordinate -> to the position of movement)
 
         #move every single coordinate

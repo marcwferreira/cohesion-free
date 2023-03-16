@@ -27,6 +27,12 @@ class Button():
             pygame.draw.rect(win, BUTTON_DISABLED, button_rect, 0, 5)
         win.blit(button_text, ( (self.x_pos+self.x_size/2)-text_size.width/2, (self.y_pos+self.y_size/2)-text_size.height/2 ))
 
+    def change_enabled(self,new):
+        if new == True:
+            self.enabled = True
+        else:
+            self.enabled = False
+
     def check_click(self):
         mouse_pos = pygame.mouse.get_pos() #check mouse position
         left_click = pygame.mouse.get_pressed()[0] #check pressed button on mouse

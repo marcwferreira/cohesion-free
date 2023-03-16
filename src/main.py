@@ -1,6 +1,6 @@
 import pygame
 from enum import Enum
-from game.constants import WIDTH, HEIGHT, BLACK, WHITE
+from game.constants import WIDTH, HEIGHT, BLACK, WHITE, MENUS_HEIGHT
 from game.board import Board
 from game.button import Button
 
@@ -96,6 +96,8 @@ def playing():
 
     button_width, button_height = 200, 50
 
+    pause_button = Button("||", WIDTH/100, MENUS_HEIGHT/4, button_height, button_height, True)
+
     resume_button = Button("RESUME", WIDTH/2-button_width/2, 250, button_width, button_height, True)
     restart_button = Button("RESTART", WIDTH/2-button_width/2, 350, button_width, button_height, True)
     menu_button = Button("MAIN MENU", WIDTH/2-button_width/2, 450, button_width, button_height, True)
@@ -111,12 +113,24 @@ def playing():
                     run = False
                     game_state =GameState.QUIT
 
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # Menu buttons
+                    if pause_button.check_click():
+                        pause_menu = True
+
+                    # Check board buttons
+                    board.check_pieced_click()
+
+                    #check for movement buttons
+                    board.check_move_piece()
+
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         pause_menu = True
 
             board.draw_squares(SCREEN)
             board.draw_pieces(SCREEN)
+            pause_button.draw(SCREEN)
             pygame.display.update()
         else:
 
