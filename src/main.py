@@ -10,7 +10,6 @@ clock = pygame.time.Clock()
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Cohesion Free")
 
-
 #define states for game
 class GameState(Enum):
     MAIN_MENU = 1

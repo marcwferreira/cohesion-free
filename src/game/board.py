@@ -1,12 +1,12 @@
 import pygame
-import random
+from random import random, randint
 from .constants import GREY, DARK_GREY, ROWS, SQUARE_SIZE, MENUS_HEIGHT, title_font
-from .constants import BLUE, RED, GREEN, YELLOW, BLACK
+from .constants import BLUE, RED, GREEN, YELLOW, BLACK, COLORS_LIST, ROTATION_LIST
 from .constants import WIDTH, HEIGHT
 from .constants import SHAPE_LIST
 from .piece import Piece
 from .button import Button
-from .utils import addEles
+from .utils import addEles, generateWhiteNoise
 
 class Board:
     def __init__(self, rows, cols, type):
@@ -79,7 +79,7 @@ class Board:
                 if idx == self.selected_piece: continue
                 if len([element for element in piece_compare if element in self.pieces[idx].coords]) != 0: return False
             for square in self.pieces[self.selected_piece].coords: # Verify collision with board walls
-                if square[1] >= (self.rows-1) and dir_correct == 1: return False 
+                if square[1] >= (self.cols-1) and dir_correct == 1: return False 
                 elif square[1] <= 0 and dir_correct == -1: return False
             #move piece
             self.pieces[self.selected_piece].move(direction)
@@ -101,7 +101,7 @@ class Board:
                 if idx == self.selected_piece: continue
                 if len([element for element in piece_compare if element in self.pieces[idx].coords]) != 0: return False
             for square in self.pieces[self.selected_piece].coords: # Verify collision with board walls
-                if square[0] >= (self.cols-1) and dir_correct == 1: return False 
+                if square[0] >= (self.rows-1) and dir_correct == 1: return False 
                 elif square[0] <= 0 and dir_correct == -1: return False
             #move piece
             self.pieces[self.selected_piece].move(direction)
@@ -212,11 +212,19 @@ class Board:
             blue_piece4 = Piece(2, 2, 0, BLUE, SHAPE_LIST[7])
             self.pieces.append(blue_piece4)
         else: #this means it is a random game
-            test_piece = Piece(0,0, 0, BLUE, SHAPE_LIST[4])
-            self.pieces.append(test_piece)
-            test_piece2 = Piece(2,0,90, RED, SHAPE_LIST[4])
-            self.pieces.append(test_piece2)
-            test_piece3 = Piece(0,2,180, GREEN, SHAPE_LIST[4])
-            self.pieces.append(test_piece3)
-            test_piece4 = Piece(2,2,270, BLUE, SHAPE_LIST[4])
-            self.pieces.append(test_piece4)
+            # Generate pearl noise map for random piece generation
+            noise = generateWhiteNoise(self.rows,self.cols,2)
+
+            # Tranform noise map into pieces and add then to the board
+            for i in range(len(noise)):
+                for j in range(len(noise[i])):
+                    if noise[i][j] < len(COLORS_LIST):
+                        new_unit_piece =  Piece(i,j,0,COLORS_LIST[noise[i][j]],SHAPE_LIST[7])
+                        grouped = False
+                        for piece in self.pieces:
+                            if piece.check_collision(new_unit_piece):
+                                piece.group_shapes(new_unit_piece)
+                                grouped = True
+                                break
+                        if not grouped:
+                            self.pieces.append(new_unit_piece)

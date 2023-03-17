@@ -75,7 +75,7 @@ class Piece:
     def group_shapes(self, shape2):
         self.coords.extend(shape2.coords)
     
-    # Check if two pieces are touching each other
+    # Check if two pieces are touching each other and are the same color
     def check_collision(self, piece2):
         if self.color == piece2.color:
             for coord1 in self.coords:
@@ -83,6 +83,7 @@ class Piece:
                     if manhattanDist(coord1,coord2) <= 1: 
                         self.group_shapes(piece2)
                         return True
+        return False
     
     def move(self,direction):
         dir_add = -1 if (direction == 'left' or direction == 'up') else 1
