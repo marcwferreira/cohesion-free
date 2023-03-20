@@ -47,6 +47,9 @@ class Board:
     def get_pieces(self):
         return self.pieces
     
+    def get_board_size(self):
+        return (self.rows,self.cols)
+    
     def select_piece(self,piece):
         self.selected_piece = piece
 
@@ -127,6 +130,7 @@ class Board:
             self.move_right.change_enabled(False)
         for i in sorted(pieces_remove, reverse=True):
             del self.pieces[i]
+        return len(pieces_remove)
 
     # Check if buttons to move piece were pressed and starts action
     def check_move_piece(self):
@@ -231,8 +235,11 @@ class Board:
                                 break
                         if not grouped:
                             self.pieces.append(new_unit_piece)
+                            self.selected_piece = len(self.pieces)-1
+                            self.check_collisions()
             # Not as good idea, pls fix later!!!!!
-            for idx in range(len(self.pieces)):
-                self.selected_piece = idx
-                self.check_collisions()
-            
+            pieces_range = len(self.pieces)-1
+            while(pieces_range != 0):
+                self.selected_piece = pieces_range
+                removed_pieces = self.check_collisions()
+                pieces_range -= removed_pieces if removed_pieces != 0 else 1

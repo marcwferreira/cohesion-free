@@ -125,7 +125,9 @@ def playing():
 
     board = Board(board_size,board_size, game_type)
 
-    move_list = computer_move_cal(Board.get_pieces,Board.rows,Board.cols)
+    if(computer):
+        board_sizes = board.get_board_size()
+        move_list = computer_move_cal(Board.get_pieces,board_sizes[0],board_sizes[1])
 
     while run:
         SCREEN.fill(WHITE)
