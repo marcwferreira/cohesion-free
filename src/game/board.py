@@ -15,14 +15,14 @@ class Board:
         self.cols = cols
         self.selected_piece = None
         self.square_size = WIDTH/self.rows
-        self.create_board(type)
         self.num_movements = 0
-
         # Buttons to move the pieces
         self.move_down = Button("V", WIDTH/5-50/2, HEIGHT-3*MENUS_HEIGHT/4,50,50,False)
         self.move_left = Button("<", 2*WIDTH/5-50/2, HEIGHT-3*MENUS_HEIGHT/4,50,50,False)
         self.move_right = Button(">", 3*WIDTH/5-50/2, HEIGHT-3*MENUS_HEIGHT/4,50,50,False)
         self.move_up = Button("^", 4*WIDTH/5-50/2, HEIGHT-3*MENUS_HEIGHT/4,50,50,False)
+        # populate board
+        self.create_board(type)
         
     def draw_squares(self,win):
         # Draws the checkboard of the board
@@ -231,4 +231,8 @@ class Board:
                                 break
                         if not grouped:
                             self.pieces.append(new_unit_piece)
-                        
+            # Not as good idea, pls fix later!!!!!
+            for idx in range(len(self.pieces)):
+                self.selected_piece = idx
+                self.check_collisions()
+            

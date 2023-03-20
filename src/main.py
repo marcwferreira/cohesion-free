@@ -144,24 +144,23 @@ def playing():
                     if(not computer):
                         # Check board buttons
                         board.check_pieced_click()
-
                         #check for movement buttons
                         board.check_move_piece()
 
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_ESCAPE:
-                            screen_types = 1
-                        if(not computer): # only let movements buttons work if it is not a computer game
-                            if board.return_if_selected():
-                                if event.key == pygame.K_w:
-                                    board.move_piece('up')
-                                elif event.key == pygame.K_a:
-                                    board.move_piece('left')
-                                elif event.key == pygame.K_s:
-                                    board.move_piece('down')
-                                elif event.key == pygame.K_d:
-                                    board.move_piece('right')
-            
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        screen_types = 1
+                    if(not computer):
+                        if board.return_if_selected():
+                            if event.key == pygame.K_w:
+                                board.move_piece('up')
+                            elif event.key == pygame.K_a:
+                                board.move_piece('left')
+                            elif event.key == pygame.K_s:
+                                board.move_piece('down')
+                            elif event.key == pygame.K_d:
+                                board.move_piece('right') 
+       
             if(computer):
                 #moves_list = [] # this will have the format (piece,movement) -> this is because we have to select a piece and then move it
                 # move_list.append(computer_move_cal(Board.get_pieces)) #add new movements -> this will dynamicaaly add new movements, however rn it is hardcoded in queue def
