@@ -1,4 +1,4 @@
-import pygame
+import pygame, time
 from enum import Enum
 from game.constants import WIDTH, HEIGHT, BLACK, WHITE, MENUS_HEIGHT, title_font
 from game.board import Board
@@ -125,6 +125,8 @@ def playing():
 
     board = Board(board_size,board_size, game_type)
 
+    move_list = computer_move_cal(Board.get_pieces)
+
     while run:
         SCREEN.fill(WHITE)
         if screen_types == 0: # screen for game
@@ -146,27 +148,29 @@ def playing():
                         #check for movement buttons
                         board.check_move_piece()
 
-                if(not computer):
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
                             screen_types = 1
-                        if board.return_if_selected():
-                            if event.key == pygame.K_w:
-                                board.move_piece('up')
-                            elif event.key == pygame.K_a:
-                                board.move_piece('left')
-                            elif event.key == pygame.K_s:
-                                board.move_piece('down')
-                            elif event.key == pygame.K_d:
-                                board.move_piece('right')
+                        if(not computer): # only let movements buttons work if it is not a computer game
+                            if board.return_if_selected():
+                                if event.key == pygame.K_w:
+                                    board.move_piece('up')
+                                elif event.key == pygame.K_a:
+                                    board.move_piece('left')
+                                elif event.key == pygame.K_s:
+                                    board.move_piece('down')
+                                elif event.key == pygame.K_d:
+                                    board.move_piece('right')
             
             if(computer):
                 #moves_list = [] # this will have the format (piece,movement) -> this is because we have to select a piece and then move it
-                move_list = computer_move_cal(Board.get_pieces)
-                for moves in move_list:
-                    print(moves)
-                    board.select_piece(moves[0])
-                    board.move_piece(moves[1])
+                # move_list.append(computer_move_cal(Board.get_pieces)) #add new movements -> this will dynamicaaly add new movements, however rn it is hardcoded in queue def
+                if len(move_list) > 0:
+                    current_move = move_list.pop(0)
+                    if current_move[0] == -1:
+                        print('game not possible anymore')
+                    board.select_piece(current_move[0])
+                    board.move_piece(current_move[1])
 
                 # call for computer movement -> it returns a list of movements and from it we will do the movements
 
