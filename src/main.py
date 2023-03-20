@@ -3,6 +3,7 @@ from enum import Enum
 from game.constants import WIDTH, HEIGHT, BLACK, WHITE, MENUS_HEIGHT, title_font
 from game.board import Board
 from game.button import Button
+from game.computer import computer_move_cal
 
 FPS = 60
 clock = pygame.time.Clock()
@@ -19,6 +20,7 @@ class GameState(Enum):
 
 game_state = GameState.MAIN_MENU
 board_size,game_type = 4,0
+computer = False
 
 # screen when configurating a game (before a game starts)
 def play_config():
@@ -137,25 +139,36 @@ def playing():
                     if pause_button.check_click():
                         screen_types = 1
 
-                    # Check board buttons
-                    board.check_pieced_click()
+                    if(not computer):
+                        # Check board buttons
+                        board.check_pieced_click()
 
-                    #check for movement buttons
-                    board.check_move_piece()
+                        #check for movement buttons
+                        board.check_move_piece()
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        screen_types = 1
-                    if board.return_if_selected():
-                        if event.key == pygame.K_w:
-                            board.move_piece('up')
-                        elif event.key == pygame.K_a:
-                            board.move_piece('left')
-                        elif event.key == pygame.K_s:
-                            board.move_piece('down')
-                        elif event.key == pygame.K_d:
-                            board.move_piece('right')
+                if(not computer):
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            screen_types = 1
+                        if board.return_if_selected():
+                            if event.key == pygame.K_w:
+                                board.move_piece('up')
+                            elif event.key == pygame.K_a:
+                                board.move_piece('left')
+                            elif event.key == pygame.K_s:
+                                board.move_piece('down')
+                            elif event.key == pygame.K_d:
+                                board.move_piece('right')
+            
+            if(computer):
+                #moves_list = [] # this will have the format (piece,movement) -> this is because we have to select a piece and then move it
+                move_list = computer_move_cal(Board.get_pieces)
+                for moves in move_list:
+                    print(moves)
+                    board.select_piece(moves[0])
+                    board.move_piece(moves[1])
 
+                # call for computer movement -> it returns a list of movements and from it we will do the movements
 
             # check if game ended
             if board.check_end():
@@ -225,7 +238,7 @@ def playing():
 # main menu screen
 def main_menu():
     SCREEN.fill(WHITE)
-    global game_state
+    global game_state, computer
     run = True
 
     button_width, button_height = 200, 50
@@ -249,9 +262,11 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button.check_click():
                     run = False
+                    computer = False
                     game_state = GameState.PLAY_CONFIG
                 elif computer_button.check_click():
                     run = False
+                    computer = True
                     game_state = GameState.PLAY_CONFIG
                 elif quit_button.check_click():
                     run = False

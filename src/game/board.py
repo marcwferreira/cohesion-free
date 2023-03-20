@@ -46,6 +46,9 @@ class Board:
 
     def get_pieces(self):
         return self.pieces
+    
+    def select_piece(self,piece):
+        self.selected_piece = piece
 
     # Function that checks if any of the buttons for selecting pieces were clicked
     def check_pieced_click(self):
@@ -61,7 +64,7 @@ class Board:
         return self.selected_piece != None
 
     def move_piece(self,direction):
-        dir_correct = -1 if (direction == 'left' or direction == 'up') else 1 # -1 to move to the or up because of how the coords work
+        dir_correct = -1 if (direction == 'left' or direction == 'up') else 1 # -1 to move to th or up because of how the coords work
         piece_compare = [self.pieces[self.selected_piece].coords[0]]
         if direction == 'up' or direction == 'down':
             # Get squares to verify if movement is possible
@@ -228,3 +231,4 @@ class Board:
                                 break
                         if not grouped:
                             self.pieces.append(new_unit_piece)
+                        
