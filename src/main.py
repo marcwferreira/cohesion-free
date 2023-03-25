@@ -127,7 +127,10 @@ def playing():
 
     if(computer):
         board_sizes = board.get_board_size()
-        move_list = computer_move_cal(Board.get_pieces,board_sizes[0],board_sizes[1])
+        board_pieces = board.get_pieces()
+        move_list = computer_move_cal(board_pieces[:],board_sizes[0],board_sizes[1])
+        print("this is the result from bfs:")
+        print(move_list)
 
     while run:
         SCREEN.fill(WHITE)
@@ -168,10 +171,11 @@ def playing():
                 # move_list.append(computer_move_cal(Board.get_pieces)) #add new movements -> this will dynamicaaly add new movements, however rn it is hardcoded in queue def
                 if len(move_list) > 0:
                     current_move = move_list.pop(0)
-                    if current_move[0] == -1:
-                        print('game not possible anymore')
+                    #if current_move[0] == -1:
+                    #    print('game not possible anymore')
                     board.select_piece(current_move[0])
                     board.move_piece(current_move[1])
+                    time.sleep(0.3)
 
                 # call for computer movement -> it returns a list of movements and from it we will do the movements
 

@@ -7,9 +7,26 @@ from .utils import addEles, manhattanDist
 class Piece:
     def __init__(self, row, col, angle, color, shape):
         self.color = color
-        self.selected = False
         self.coords = []
         self.calc_coords(row, col, angle, shape) # List of coordinates the shape occupies
+
+    def __eq__(self,other):
+        if not isinstance(other, Piece):
+            # don't attempt to compare against unrelated types
+            return NotImplemented
+        
+        if self.color == other.color:
+            self_list = [tuple(lst) for lst in self.coords]
+            other_list = [tuple(lst) for lst in other.coords]
+            if set(self_list) == set(other_list):
+                return True
+        return False
+    
+    def __lt__(self,other):
+        if self.color < other.color:
+            return True
+        if self.coords < other.coords:
+            return True
 
     # Calculates all the coordinates for the blocks needed to position the piece
     def calc_coords(self,row,col,angle, shape):
@@ -63,14 +80,10 @@ class Piece:
             button_rect = pygame.rect.Rect((coord[0]*square_size,MENUS_HEIGHT+coord[1]*square_size),(square_size, square_size))
             #check if when left mouse button is pressed on mouse it is on top of button
             if left_click and button_rect.collidepoint(mouse_pos):
-                self.selected = True
                 return True
             else:
                continue
         return False
-            
-    def remove_select(self):
-        self.selected = False
 
     def group_shapes(self, shape2):
         self.coords.extend(shape2.coords)

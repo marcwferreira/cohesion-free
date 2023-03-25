@@ -153,6 +153,13 @@ class Board:
         if level == 1:
             red_piece1 = Piece(0, 0, 270, RED, SHAPE_LIST[4])
             self.pieces.append(red_piece1)
+            red_piece2 = Piece(3, 3, 0, RED, SHAPE_LIST[7])
+            self.pieces.append(red_piece2)
+
+            #this is a verfiiation and should be removed
+            #red_piece3 = Piece(0, 0, 270, RED, SHAPE_LIST[4])
+            # print("This is a piece comparisson verification: {}".format(red_piece1 == red_piece3))
+
             green_piece1 = Piece(1, 0, 0, GREEN, SHAPE_LIST[7])
             self.pieces.append(green_piece1)
             blue_piece = Piece(3, 0, 0, BLUE, SHAPE_LIST[7])
@@ -161,6 +168,7 @@ class Board:
             self.pieces.append(green_piece2)
             red_piece2 = Piece(3, 3, 0, RED, SHAPE_LIST[7])
             self.pieces.append(red_piece2)
+            
         elif level == 2:
             red_piece = Piece(1, 0, 0, RED, SHAPE_LIST[3])
             self.pieces.append(red_piece)
