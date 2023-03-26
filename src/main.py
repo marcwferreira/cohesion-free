@@ -32,8 +32,12 @@ def play_config():
 
     button_width, button_height = 200, 50
 
-    decrease_button = Button("DECREASE BOARD", WIDTH/4-button_width/2-15, 250, button_width, button_height, True)
-    increase_button = Button("INCREASE BOARD", 3*WIDTH/4-button_width/2+15, 250, button_width, button_height, True)
+    if(computer):
+        decrease_button = Button("DECREASE BOARD", WIDTH/4-button_width/2-15, 250, button_width, button_height, True)
+        increase_button = Button("INCREASE BOARD", 3*WIDTH/4-button_width/2+15, 250, button_width, button_height, True)
+    else:
+        decrease_button = Button("DECREASE BOARD", WIDTH/4-button_width/2-15, 250, button_width, button_height, True)
+        increase_button = Button("INCREASE BOARD", 3*WIDTH/4-button_width/2+15, 250, button_width, button_height, True)
     random_button = Button("RANDOM START", WIDTH/2-button_width/2, 350, button_width, button_height, True)
     one_button = Button("LV. 1 (4x4)", WIDTH/4-button_width/2+10, 450, button_width, button_height, True)
     two_button = Button("LV. 2 (4x4)", 3*WIDTH/4-button_width/2-10, 450, button_width, button_height, True)
@@ -48,8 +52,12 @@ def play_config():
         SCREEN.fill(WHITE)
         clock.tick(FPS)
 
-        size_text=title_font.render('{} X {}'.format(board_size, board_size), True, BLACK)
-        size_rect = size_text.get_rect()
+        if(computer):
+            size_text=title_font.render('{} X {}'.format(board_size, board_size), True, BLACK)
+            size_rect = size_text.get_rect()
+        else:
+            size_text=title_font.render('{} X {}'.format(board_size, board_size), True, BLACK)
+            size_rect = size_text.get_rect()
         
         #game event
         for event in pygame.event.get():
@@ -129,7 +137,7 @@ def playing():
         board_sizes = board.get_board_size()
         board_pieces = board.get_pieces()
         move_list = computer_move_cal(board_pieces[:],board_sizes[0],board_sizes[1])
-        print("this is the result from bfs:")
+        print("this is the result from bot:")
         print(move_list)
 
     while run:
@@ -202,6 +210,9 @@ def playing():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if restart_button.check_click():
                         board = Board(board_size,board_size, game_type)
+                        if(computer):
+                            board_pieces = board.get_pieces()
+                            move_list = computer_move_cal(board_pieces[:],board_sizes[0],board_sizes[1])
                         screen_types = 0
                     elif menu_button.check_click():
                         run = False

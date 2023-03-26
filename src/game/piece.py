@@ -98,6 +98,15 @@ class Piece:
                         return True
         return False
     
+    # Calculates the distance (manhattan distance) from this piece to another one
+    def calculate_dist(self,piece2):
+        dist = 1000
+        for coord1 in self.coords:
+            for coord2 in piece2.coords:
+                dist_measured = manhattanDist(coord1,coord2)
+                dist = min(dist,dist_measured)
+        return dist
+    
     def move(self,direction):
         dir_add = -1 if (direction == 'left' or direction == 'up') else 1
         if direction == 'up' or direction == 'down':

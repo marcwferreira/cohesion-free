@@ -166,8 +166,6 @@ class Board:
             self.pieces.append(blue_piece)
             green_piece2 = Piece(2, 2, 180, GREEN, SHAPE_LIST[4])
             self.pieces.append(green_piece2)
-            red_piece2 = Piece(3, 3, 0, RED, SHAPE_LIST[7])
-            self.pieces.append(red_piece2)
             
         elif level == 2:
             red_piece = Piece(1, 0, 0, RED, SHAPE_LIST[3])
