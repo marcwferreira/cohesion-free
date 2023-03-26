@@ -3,9 +3,25 @@ import copy, random, functools
 from .utils import move_piece
 from queue import PriorityQueue
 
-def computer_move_cal(board_pieces, board_height, board_width):
+def computer_move_cal(board_pieces, board_height, board_width, algorithm):
+
+    # Make a copy of the board to nopt break the original
     board_copy = copy.deepcopy(board_pieces)
-    result = a_star(board_copy, board_width, board_height)
+
+    # Choose the algorithm
+    if algorithm == "bfs":
+        result = bfs(board_copy, board_width, board_height)
+    elif algorithm == 'dfs':
+        result = dfs(board_copy, board_width, board_height)
+    elif algorithm == "it. dfs":
+        result = bfs(board_copy, board_width, board_height)
+    elif algorithm == "greedy":
+        result = greedy_search(board_copy, board_width, board_height)
+    elif algorithm == "a*":
+        result = a_star(board_copy, board_width, board_height)
+    else:
+        result = dfs(board_copy, board_width, board_height)
+
     return result
 
 # Define function to check if a state is the goal state
@@ -148,8 +164,6 @@ def greedy_search(start_board, rows, cols):
 
     return current_state[1] # if is_goal_state(current_state) else []
 
-
-# TODO
 def a_star(start_board, rows, cols):
     # Define the priority queue for A*
     priority_queue = PriorityQueue()
@@ -224,54 +238,3 @@ def a_star(start_board, rows, cols):
             priority_queue.put((new_priority, new_state, new_moves))
 
     return []
-
-
-################################################################################# ATTEMPT ON GREEDY SEARCH BACKTRAKING - ITS BAD
-def greedy_search2(start_board, rows, cols):
-    
-    # Define list for storing the current state
-    current_state = (start_board,[])
-
-    # List of visited board configurations
-    visited_boards = [sorted(start_board)]
-
-    # Stack of states to backtrack to
-    backtrack_stack = []
-
-    # Define function to generate new states
-    def generate_states(state, moves):
-        new_states = []
-        for i in range(len(state)):
-            for direction in ["up", "down", "left", "right"]:
-                new_board = move_piece(copy.deepcopy(state), rows, cols, i, direction)
-                print("new generated board: using {} and {}".format(i,direction))
-                if new_board != False:
-                        if sorted(new_board) not in visited_boards:
-                            new_states.append((new_board,copy.deepcopy(moves)+[[i,direction]]))
-        return new_states
-    
-    def evaluation_function(state_move): #TODO
-        return -1 # not complete
-    
-    # Perform greedy search
-    while True:
-        (cur_state, cur_moves) = current_state
-        next_states = generate_states(cur_state, cur_moves)
-        if is_goal_state(cur_state) or not next_states:
-            if not backtrack_stack:
-                break
-            while backtrack_stack:
-                prev_state = backtrack_stack.pop()
-            (cur_state, cur_moves) = prev_state
-            next_states = generate_states(cur_state, cur_moves)
-            if not next_states:
-                break
-        best_next_state = max(next_states, key=evaluation_function)
-        if best_next_state in backtrack_stack:
-            backtrack_stack.remove(best_next_state)
-        else:
-            backtrack_stack.append(current_state)
-        current_state = best_next_state
-        visited_boards.append(sorted(current_state[0]))
-
-    return current_state[1]

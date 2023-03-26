@@ -21,6 +21,7 @@ class GameState(Enum):
 game_state = GameState.MAIN_MENU
 board_size,game_type = 4,0
 computer = False
+bot_algorithm = 'dfs'
 
 # screen when configurating a game (before a game starts)
 def play_config():
@@ -28,16 +29,19 @@ def play_config():
     global game_state
     global board_size
     global game_type
+    global bot_algorithm
     run = True
 
     button_width, button_height = 200, 50
 
+    #bot configs
+    bot_configs = ['bfs','dfs','it. dfs','greedy','a*']
+
     if(computer):
-        decrease_button = Button("DECREASE BOARD", WIDTH/4-button_width/2-15, 250, button_width, button_height, True)
-        increase_button = Button("INCREASE BOARD", 3*WIDTH/4-button_width/2+15, 250, button_width, button_height, True)
-    else:
-        decrease_button = Button("DECREASE BOARD", WIDTH/4-button_width/2-15, 250, button_width, button_height, True)
-        increase_button = Button("INCREASE BOARD", 3*WIDTH/4-button_width/2+15, 250, button_width, button_height, True)
+        select_left_button = Button("<-", WIDTH/4-button_width/2-15, 260, button_width, button_height, True)
+        select_right_button = Button("->", 3*WIDTH/4-button_width/2+15, 260, button_width, button_height, True)
+    decrease_button = Button("DECREASE BOARD", WIDTH/4-button_width/2-15, 170, button_width, button_height, True)
+    increase_button = Button("INCREASE BOARD", 3*WIDTH/4-button_width/2+15, 170, button_width, button_height, True)
     random_button = Button("RANDOM START", WIDTH/2-button_width/2, 350, button_width, button_height, True)
     one_button = Button("LV. 1 (4x4)", WIDTH/4-button_width/2+10, 450, button_width, button_height, True)
     two_button = Button("LV. 2 (4x4)", 3*WIDTH/4-button_width/2-10, 450, button_width, button_height, True)
@@ -52,12 +56,12 @@ def play_config():
         SCREEN.fill(WHITE)
         clock.tick(FPS)
 
+        size_text=title_font.render('{} X {}'.format(board_size, board_size), True, BLACK)
+        size_rect = size_text.get_rect()
+
         if(computer):
-            size_text=title_font.render('{} X {}'.format(board_size, board_size), True, BLACK)
-            size_rect = size_text.get_rect()
-        else:
-            size_text=title_font.render('{} X {}'.format(board_size, board_size), True, BLACK)
-            size_rect = size_text.get_rect()
+            bot_text=title_font.render(bot_algorithm, True, BLACK)
+            bot_rect = bot_text.get_rect()
         
         #game event
         for event in pygame.event.get():
@@ -72,6 +76,13 @@ def play_config():
                 elif increase_button.check_click():
                     if board_size < 12:
                         board_size += 1
+                if(computer):
+                    if select_left_button.check_click():
+                        bot_algorithm = bot_configs[(bot_configs.index(bot_algorithm)-1)%len(bot_configs)]
+                        print(bot_algorithm)
+                    elif select_right_button.check_click():
+                        bot_algorithm = bot_configs[(bot_configs.index(bot_algorithm)+1)%len(bot_configs)]   
+                        print(bot_algorithm) 
                 if random_button.check_click():
                     run = False
                     game_type = 0
@@ -103,7 +114,11 @@ def play_config():
 
 
         SCREEN.blit(title_text, (WIDTH/2-title_rect.width/2, 100))
-        SCREEN.blit(size_text, (WIDTH/2-size_rect.width/2, 250+size_rect.height/2))
+        SCREEN.blit(size_text, (WIDTH/2-size_rect.width/2, 170+size_rect.height/2))
+        if(computer):
+            select_left_button.draw(SCREEN)
+            select_right_button.draw(SCREEN)
+            SCREEN.blit(bot_text, (WIDTH/2-bot_rect.width/2, 260+size_rect.height/2))
         increase_button.draw(SCREEN)
         decrease_button.draw(SCREEN)
         random_button.draw(SCREEN)
@@ -136,7 +151,7 @@ def playing():
     if(computer):
         board_sizes = board.get_board_size()
         board_pieces = board.get_pieces()
-        move_list = computer_move_cal(board_pieces[:],board_sizes[0],board_sizes[1])
+        move_list = computer_move_cal(board_pieces[:],board_sizes[0],board_sizes[1],bot_algorithm)
         print("this is the result from bot:")
         print(move_list)
 
@@ -212,7 +227,7 @@ def playing():
                         board = Board(board_size,board_size, game_type)
                         if(computer):
                             board_pieces = board.get_pieces()
-                            move_list = computer_move_cal(board_pieces[:],board_sizes[0],board_sizes[1])
+                            move_list = computer_move_cal(board_pieces[:],board_sizes[0],board_sizes[1],bot_algorithm)
                         screen_types = 0
                     elif menu_button.check_click():
                         run = False
