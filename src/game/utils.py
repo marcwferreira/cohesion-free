@@ -19,7 +19,7 @@ def generateWhiteNoise(width,height,difficulty):
 
     return noise
 
-# Def function to move piece inside bot
+# Def function to move pieces on a board
 def move_piece(state_tuple,rows,cols,choosen_piece,direction):
         state = list(state_tuple)
         dir_correct = -1 if (direction == 'left' or direction == 'up') else 1 # -1 to move to th or up because of how the coords work

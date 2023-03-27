@@ -1,12 +1,11 @@
 import pygame
-from random import random, randint
-from .constants import GREY, DARK_GREY, ROWS, SQUARE_SIZE, MENUS_HEIGHT, title_font
-from .constants import BLUE, RED, GREEN, YELLOW, BLACK, COLORS_LIST, ROTATION_LIST
+from .constants import GREY, DARK_GREY, MENUS_HEIGHT, title_font
+from .constants import BLUE, RED, GREEN, YELLOW, BLACK, COLORS_LIST
 from .constants import WIDTH, HEIGHT
 from .constants import SHAPE_LIST
 from .piece import Piece
 from .button import Button
-from .utils import addEles, generateWhiteNoise
+from .utils import generateWhiteNoise, move_piece
 
 class Board:
     def __init__(self, rows, cols, type):
@@ -67,54 +66,10 @@ class Board:
         return self.selected_piece != None
 
     def move_piece(self,direction):
-        dir_correct = -1 if (direction == 'left' or direction == 'up') else 1 # -1 to move to th or up because of how the coords work
-        piece_compare = [self.pieces[self.selected_piece].coords[0]]
-        if direction == 'up' or direction == 'down':
-            # Get squares to verify if movement is possible
-            for coord in self.pieces[self.selected_piece].coords:
-                if coord[0] not in [item[0] for item in piece_compare]:
-                    piece_compare.append(coord)
-                else:
-                    for idx in range(len(piece_compare)):
-                        if piece_compare[idx][0] == coord[0] and coord[1] > piece_compare[idx][1] and direction == 'down': piece_compare[idx] = coord
-                        elif piece_compare[idx][0] == coord[0] and coord[1] < piece_compare[idx][1] and direction == 'up': piece_compare[idx] = coord
-            # Add 1 or -1 to every y coord in the comparisson coords to get the matching cells to compare
-            piece_compare = list(map(addEles,piece_compare,([[0,dir_correct]]*len(piece_compare))))
-            # Verify collision with other pieces
-            for idx in range(len(self.pieces)):
-                if idx == self.selected_piece: continue
-                if len([element for element in piece_compare if element in self.pieces[idx].coords]) != 0: return False
-            for square in self.pieces[self.selected_piece].coords: # Verify collision with board walls
-                if square[1] >= (self.cols-1) and dir_correct == 1: return False 
-                elif square[1] <= 0 and dir_correct == -1: return False
-            #move piece
-            self.pieces[self.selected_piece].move(direction)
-            #increase score
+        possible_move = move_piece(tuple(self.pieces),self.rows,self.cols,self.selected_piece,direction)
+        if possible_move:
             self.num_movements += 1
-        elif direction == 'left' or direction == 'right':
-            # Get squares to verify if movement is possible
-            for coord in self.pieces[self.selected_piece].coords:
-                if coord[1] not in [item[1] for item in piece_compare]:
-                    piece_compare.append(coord)
-                else:
-                    for idx in range(len(piece_compare)):
-                        if piece_compare[idx][1] == coord[1] and coord[0] > piece_compare[idx][0] and direction == 'right': piece_compare[idx] = coord
-                        elif piece_compare[idx][1] == coord[1] and coord[0] < piece_compare[idx][0] and direction == 'left': piece_compare[idx] = coord
-            # Add 1 or -1 to every y coord in the comparisson coords to get the matching cells to compare
-            piece_compare = list(map(addEles,piece_compare,([[dir_correct,0]]*len(piece_compare))))
-            # Verify collision with other pieces
-            for idx in range(len(self.pieces)):
-                if idx == self.selected_piece: continue
-                if len([element for element in piece_compare if element in self.pieces[idx].coords]) != 0: return False
-            for square in self.pieces[self.selected_piece].coords: # Verify collision with board walls
-                if square[0] >= (self.rows-1) and dir_correct == 1: return False 
-                elif square[0] <= 0 and dir_correct == -1: return False
-            #move piece
-            self.pieces[self.selected_piece].move(direction)
-            #increase score
-            self.num_movements += 1
-        #check if collisions (for pieces grouping) happendes
-        self.check_collisions()
+            self.check_collisions()
 
     def check_collisions(self):
         pieces_remove = []
@@ -155,18 +110,12 @@ class Board:
             self.pieces.append(red_piece1)
             red_piece2 = Piece(3, 3, 0, RED, SHAPE_LIST[7])
             self.pieces.append(red_piece2)
-
-            #this is a verfiiation and should be removed
-            #red_piece3 = Piece(0, 0, 270, RED, SHAPE_LIST[4])
-            # print("This is a piece comparisson verification: {}".format(red_piece1 == red_piece3))
-
             green_piece1 = Piece(1, 0, 0, GREEN, SHAPE_LIST[7])
             self.pieces.append(green_piece1)
             blue_piece = Piece(3, 0, 0, BLUE, SHAPE_LIST[7])
             self.pieces.append(blue_piece)
             green_piece2 = Piece(2, 2, 180, GREEN, SHAPE_LIST[4])
             self.pieces.append(green_piece2)
-            
         elif level == 2:
             red_piece = Piece(1, 0, 0, RED, SHAPE_LIST[3])
             self.pieces.append(red_piece)

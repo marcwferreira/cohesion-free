@@ -1,7 +1,6 @@
 import pygame
 import math
-from .constants import RED, GREEN, BLUE, YELLOW, SQUARE_SIZE, MENUS_HEIGHT
-from .constants import WIDTH, HEIGHT
+from .constants import MENUS_HEIGHT
 from .utils import addEles, manhattanDist
 
 class Piece:

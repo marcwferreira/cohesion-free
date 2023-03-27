@@ -1,5 +1,5 @@
-from collections import deque, Counter
-import copy, random, functools
+from collections import deque
+import copy
 from .utils import move_piece
 from queue import PriorityQueue
 
@@ -22,6 +22,7 @@ def computer_move_cal(board_pieces, board_height, board_width, algorithm):
     else:
         result = dfs(board_copy, board_width, board_height)
 
+    # Return the list of movements it found at the end
     return result
 
 # Define function to check if a state is the goal state
@@ -57,8 +58,10 @@ def bfs(start_board, rows, cols):
             return moves
         for new_state, new_moves in generate_states(state, moves):
             queue.append([new_state, new_moves])
+        if not queue:
+            return moves
 
-    return [] # -> Change so returns when no solution is found
+    return []
 
 def dfs(start_board, rows, cols):
 
@@ -74,7 +77,6 @@ def dfs(start_board, rows, cols):
         for i in range(len(state)):
             for direction in ["up", "down", "left", "right"]:
                 new_board = move_piece(copy.deepcopy(state), rows, cols, i, direction)
-                #print("new generated board: using {} and {}".format(i,direction))
                 if new_board != False:
                     if sorted(new_board) not in visited_boards:
                         new_states.append((new_board,copy.deepcopy(moves)+[[i,direction]]))
@@ -87,19 +89,12 @@ def dfs(start_board, rows, cols):
             return moves
         for new_state, new_moves in generate_states(state, moves):
             stack.append([new_state, new_moves])
+        if not stack:
+            return moves
 
     return []
 
 def iterative_dfs(start_board,rows,cols):
-
-    def iterative_deepening_dfs(start_board, rows, cols):
-        depth = 0
-        while True:
-            print(depth)
-            result = depth_limited_dfs(start_board, rows, cols, depth)
-            if result is not None:
-                return result
-            depth += 1
 
     def depth_limited_dfs(start_board, rows, cols, depth):
         visited_boards = [sorted(start_board)]
@@ -110,13 +105,13 @@ def iterative_dfs(start_board,rows,cols):
                 return moves
             if len(moves) == depth:
                 continue
-            for new_state, new_moves in generate_states(state, moves, rows, cols):
+            for new_state, new_moves in generate_states(state, rows, cols):
                 if sorted(new_state) not in visited_boards:
                     stack.append((new_state, moves + [new_moves]))
                     visited_boards.append(sorted(new_state))
         return None
 
-    def generate_states(state, moves, rows, cols):
+    def generate_states(state, rows, cols):
         new_states = []
         for i in range(len(state)):
             for direction in ["up", "down", "left", "right"]:
@@ -124,10 +119,49 @@ def iterative_dfs(start_board,rows,cols):
                 if new_board != False:
                     new_states.append((new_board, [i, direction]))
         return new_states
+    
+    depth = 0
+    while True:
+        print(depth)
+        result = depth_limited_dfs(start_board, rows, cols, depth)
+        if result is not None:
+            return result
+        depth += 1
 
-    moves = iterative_deepening_dfs(start_board, rows, cols)
-        
-    return moves
+def evaluation_function(info_tuple, rows, cols,):
+    board = info_tuple[0]
+    result = 0
+    piece_colors = []
+    distance_pieces=[]
+    for piece in board:
+        piece_colors.append(piece.color)
+
+        min_x, max_x = 0, 1000
+        min_y, max_y = 0, 1000
+        for coord in piece.coords:
+            if coord[0] < min_x:
+                min_x = coord[0]
+            elif coord[0] > max_x:
+                max_x = coord[0]
+            if coord[1] < min_x:
+                min_x = coord[1]
+            elif coord[1] > max_x:
+                max_x = coord[1]
+
+        # Size of pieces plays a negative impact in result, this is to prevent soft blocks
+        result -= (max_x-min_x)
+        result -= (max_y-min_y)
+
+        for piece2 in board:
+            if piece == piece2:
+                continue
+            distance_pieces.append(piece.calculate_dist(piece2))
+
+    result -= len(piece_colors) # number of pieces on board have negative impact on result
+
+    # Calculate distance form pieces of the same color TODO
+    return -1
+
 
 def greedy_search(start_board, rows, cols):
     
@@ -150,16 +184,13 @@ def greedy_search(start_board, rows, cols):
                             visited_boards.append(sorted(new_board))
         return new_states
     
-    def evaluation_function(state_move): #TODO
-        return -1 # not complete
-    
     # Perform greedy search
     while True:
         (cur_state, cur_moves) = current_state
         next_states = generate_states(cur_state, cur_moves)
         if is_goal_state(cur_state) or not next_states:
             break
-        best_next_state = max(next_states, key=evaluation_function)
+        best_next_state = min(next_states, key=lambda x: evaluation_function(x,rows,cols))
         current_state = best_next_state
 
     return current_state[1] # if is_goal_state(current_state) else []
@@ -181,55 +212,18 @@ def a_star(start_board, rows, cols):
                 if new_board != False:
                     if sorted(new_board) not in visited_boards:
                         # Calculate the priority of the new state
-                        priority = len(moves) + 1 + evaluation_function(new_board, rows, cols)
+                        priority = len(moves) + 1 + evaluation_function((new_board, copy.deepcopy(moves) + [(i, direction)]), rows, cols)
                         # Add the new state to the priority queue with calculated priority
                         new_states.append((priority, new_board, copy.deepcopy(moves) + [(i, direction)]))
                         visited_boards.append(sorted(new_board))
         return new_states
     
-    # Define the heuristic function
-    def evaluation_function(board, rows, cols):
-        result = 0
-        piece_colors = []
-        distance_pieces=[]
-        for piece in board:
-            piece_colors.append(piece.color)
-
-            min_x, max_x = 0, 1000
-            min_y, max_y = 0, 1000
-            for coord in piece.coords:
-                if coord[0] < min_x:
-                    min_x = coord[0]
-                elif coord[0] > max_x:
-                    max_x = coord[0]
-                if coord[1] < min_x:
-                    min_x = coord[1]
-                elif coord[1] > max_x:
-                    max_x = coord[1]
-
-            # Size of pieces plays a negative impact in result, this is to prevent soft blocks
-            result -= (max_x-min_x)
-            result -= (max_y-min_y)
-
-            for piece2 in board:
-                if piece == piece2:
-                    continue
-                distance_pieces.append(piece.calculate_dist(piece2))
-
-        result -= len(piece_colors) # number of pieces on board have negative impact on result
-
-        # Calculate distance form pieces of the same color TODO
-        
-
-        return -1
-    
     # Performing A*
     while not priority_queue.empty():
-        test, state, moves = priority_queue.get()
+        score, state, moves = priority_queue.get()
         print("current state to avaliate:")
-        print(test)
+        print(score)
         print(state)
-        print(moves)
         print("#######################################################")
         if is_goal_state(state):
             return moves

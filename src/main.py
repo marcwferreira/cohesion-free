@@ -137,6 +137,7 @@ def playing():
     run = True
 
     screen_types = 0
+    end_type = "lost"
 
     button_width, button_height = 200, 50
 
@@ -147,6 +148,12 @@ def playing():
     menu_button = Button("MAIN MENU", WIDTH/2-button_width/2, 450, button_width, button_height, True)
 
     board = Board(board_size,board_size, game_type)
+
+    #draw the screen for the first time (needed for the computer mode)
+    board.draw_squares(SCREEN)
+    board.draw_pieces(SCREEN)
+    pause_button.draw(SCREEN)
+    pygame.display.update()
 
     if(computer):
         board_sizes = board.get_board_size()
@@ -192,6 +199,7 @@ def playing():
             if(computer):
                 #moves_list = [] # this will have the format (piece,movement) -> this is because we have to select a piece and then move it
                 # move_list.append(computer_move_cal(Board.get_pieces)) #add new movements -> this will dynamicaaly add new movements, however rn it is hardcoded in queue def
+                print(move_list)
                 if len(move_list) > 0:
                     current_move = move_list.pop(0)
                     #if current_move[0] == -1:
@@ -199,11 +207,16 @@ def playing():
                     board.select_piece(current_move[0])
                     board.move_piece(current_move[1])
                     time.sleep(0.3)
+                else:
+                    if board.check_end():
+                        end_type = "won"
+                    screen_types = 2
 
                 # call for computer movement -> it returns a list of movements and from it we will do the movements
 
-            # check if game ended
+            # check if player won the game
             if board.check_end():
+                end_type = "won"
                 screen_types = 2
 
             board.draw_squares(SCREEN)
@@ -212,7 +225,7 @@ def playing():
             pygame.display.update()
         elif screen_types == 2: # screen for game end
 
-            title_text=title_font.render("YOU WON!", True, BLACK)
+            title_text=title_font.render("Game {}".format(end_type), True, BLACK)
             title_rect = title_text.get_rect()
             score_text=title_font.render("Number of movements: {}".format(board.num_movements), True, BLACK)
             score_rect = score_text.get_rect()
@@ -224,6 +237,7 @@ def playing():
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if restart_button.check_click():
+                        end_type = "lost"
                         board = Board(board_size,board_size, game_type)
                         if(computer):
                             board_pieces = board.get_pieces()
@@ -238,7 +252,6 @@ def playing():
             restart_button.draw(SCREEN)
             menu_button.draw(SCREEN)
             pygame.display.update()
-
         else: # pause menu
 
             title_text=title_font.render("PAUSED", True, BLACK)
@@ -268,7 +281,6 @@ def playing():
             restart_button.draw(SCREEN)
             menu_button.draw(SCREEN)
             pygame.display.update()
-
 
 # main menu screen
 def main_menu():

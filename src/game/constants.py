@@ -4,8 +4,6 @@ pygame.font.init()
 
 WIDTH, HEIGHT = 600, 800
 MENUS_HEIGHT = 100
-ROWS, COLS = 4,4 #this is a test -> it will be not fixed
-SQUARE_SIZE = WIDTH//ROWS #this is also not used for tests
 
 #colors for the blocks
 RED = (255, 0, 0)
@@ -15,7 +13,7 @@ YELLOW = (255, 255, 0)
 
 COLORS_LIST = [RED,GREEN,BLUE,YELLOW]
 
-#colors for the board
+#colors for the board and UI
 GREY = (128, 128, 128)
 DARK_GREY = (50, 50, 50)
 BLACK = (0, 0, 0)
@@ -75,7 +73,6 @@ C_SHAPE = [[0,0],[1,0],[0,1],[0,2],[2,1]]
 #  **
 
 SHAPE_LIST = [S_SHAPE, I_SHAPE_1, I_SHAPE_2, O_SHAPE, J_SHAPE, L_SHAPE, T_SHAPE, UNIT_SHAPE, C_SHAPE]
-ROTATION_LIST = [0,90,180,270]
 
 #buttons color
 BUTTON_BACKGROUND = (128, 128, 128)
