@@ -172,7 +172,7 @@ In case the computer lost the game the following screen will be presented:
 
 # Credits
 
-This game was made with love&hearts; by:
+This game was made with love &hearts; by:
 
 - Catarina Barbosa – up202004898@fc.up.pt​
 - Francisca Andrade – up202005977@fc.up.pt​
