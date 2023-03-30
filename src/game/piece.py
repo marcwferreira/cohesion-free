@@ -1,5 +1,17 @@
 import pygame
 import math
+## Piece
+#   This contains the representation of a piece in the game and its logic.
+#  
+#   The board is composed by a list of coordinates and a color.
+#
+#   made by:
+#   - Catarina Barbosa
+#   - Francisca Andrade
+#   - Marcos Ferreira​
+#
+#   03/16/2023
+
 from .constants import MENUS_HEIGHT
 from .utils import addEles, manhattanDist
 
@@ -9,6 +21,7 @@ class Piece:
         self.coords = []
         self.calc_coords(row, col, angle, shape) # List of coordinates the shape occupies
 
+    # Pieces are equal if their colors are equal and if their list of coordinates are equal
     def __eq__(self,other):
         if not isinstance(other, Piece):
             # don't attempt to compare against unrelated types
@@ -21,6 +34,7 @@ class Piece:
                 return True
         return False
     
+    # Definition of how to sort the pieces
     def __lt__(self,other):
         if self.color < other.color:
             return True
@@ -84,6 +98,8 @@ class Piece:
                continue
         return False
 
+    # Merges "shape2" into the piece that called this function
+    # Merges another piece into the piece taht called this function
     def group_shapes(self, shape2):
         self.coords.extend(shape2.coords)
     
@@ -106,6 +122,7 @@ class Piece:
                 dist = min(dist,dist_measured)
         return dist
     
+    # Moves all coordinates of the piece into one direction
     def move(self,direction):
         dir_add = -1 if (direction == 'left' or direction == 'up') else 1
         if direction == 'up' or direction == 'down':
@@ -113,6 +130,7 @@ class Piece:
         elif direction == 'left' or direction == 'right':
             self.coords = list(map(addEles,self.coords,([[dir_add,0]]*len(self.coords))))
     
+    # Returns the ractangles necessry to draw the pieces on the screen
     def draw(self, win, square_size):
         for coord in self.coords:
             pygame.draw.rect(win, self.color, (coord[0]*square_size,MENUS_HEIGHT+coord[1]*square_size,square_size,square_size))

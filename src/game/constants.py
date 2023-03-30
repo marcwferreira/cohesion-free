@@ -1,3 +1,14 @@
+## Constants
+#   This file aggregates constants needed for the game into one document for 
+#   easier and faster modifiction.
+#
+#   made by:
+#   - Catarina Barbosa
+#   - Francisca Andrade
+#   - Marcos Ferreira​
+#
+#   03/16/2023
+
 import pygame
 
 pygame.font.init()

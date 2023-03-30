@@ -128,7 +128,7 @@ def iterative_dfs(start_board,rows,cols):
             return result
         depth += 1
 
-def evaluation_function(info_tuple, rows, cols,):
+def evaluation_function(info_tuple, rows, cols):
     board = info_tuple[0]
     result = 0
     piece_colors = []

@@ -1,3 +1,17 @@
+## Board
+#   This contains the representation of the game board and its functionalities
+#   
+#   The board is composed by a list of pieces, its size (in rows and cols).
+#   It is responsible for verifying the movements and couting them and also veryfing,
+#   if the game was won.
+#
+#   made by:
+#   - Catarina Barbosa
+#   - Francisca Andrade
+#   - Marcos Ferreira​
+#
+#   03/16/2023
+
 import pygame
 from .constants import GREY, DARK_GREY, MENUS_HEIGHT, title_font
 from .constants import BLUE, RED, GREEN, YELLOW, BLACK, COLORS_LIST
@@ -23,6 +37,7 @@ class Board:
         # populate board
         self.create_board(type)
         
+    # Draws the board on the screen (a gray checkerboard)
     def draw_squares(self,win):
         # Draws the checkboard of the board
         pygame.draw.rect(win, DARK_GREY, (0, MENUS_HEIGHT, WIDTH, HEIGHT-2*MENUS_HEIGHT))
@@ -39,6 +54,7 @@ class Board:
         #draw number of movements on top
         win.blit(title_font.render("NUMBER OF MOVES:{}".format(self.num_movements), True, BLACK),(4*WIDTH/10,1.5*MENUS_HEIGHT/4))
 
+    # Function to draw the pieces of the board on the screen
     def draw_pieces(self,win):
         for piece in self.pieces:
             piece.draw(win,self.square_size)
@@ -49,6 +65,8 @@ class Board:
     def get_board_size(self):
         return (self.rows,self.cols)
     
+    # Selects a piece of the board
+    # This is done using its index on the list of pieces
     def select_piece(self,piece):
         self.selected_piece = piece
 
@@ -62,15 +80,19 @@ class Board:
                 self.move_left.change_enabled(True)
                 self.move_right.change_enabled(True)
 
+    # Returns if there is a piece selected
     def return_if_selected(self):
         return self.selected_piece != None
 
+    # Call funtion to move piece, only makes the movement if it is possible to move it
     def move_piece(self,direction):
         possible_move = move_piece(tuple(self.pieces),self.rows,self.cols,self.selected_piece,direction)
         if possible_move:
             self.num_movements += 1
             self.check_collisions()
 
+    # Verifies if there is a collisions between two pieces
+    # If a collision if found it merges the two pieces into one
     def check_collisions(self):
         pieces_remove = []
         for idx in range(len(self.pieces)):
@@ -104,6 +126,7 @@ class Board:
             return True
         return False       
 
+    # Creates the board. It can be a predefined board or a random one
     def create_board(self, level):
         if level == 1:
             red_piece1 = Piece(0, 0, 270, RED, SHAPE_LIST[4])
@@ -192,7 +215,8 @@ class Board:
                             self.pieces.append(new_unit_piece)
                             self.selected_piece = len(self.pieces)-1
                             self.check_collisions()
-            # Not as good idea, pls fix later!!!!!
+            
+            # Merge the pieces that are touching each other into one
             pieces_range = len(self.pieces)-1
             while(pieces_range != 0):
                 self.selected_piece = pieces_range
