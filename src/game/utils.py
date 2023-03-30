@@ -1,15 +1,28 @@
+## Utils
+#   This files contains functions to auxiliates in other tasks.
+#   
+#   made by:
+#   - Catarina Barbosa
+#   - Francisca Andrade
+#   - Marcos Ferreira​
+#
+#   03/16/2023
+
 import random
 from .constants import COLORS_LIST
 
+# Function to sum two lists element by element
 def addEles(list1,list2):
     return [sum(x) for x in zip(list1, list2)]
 
+# Function to calculate the manhattan distance between two coordiantes
 def manhattanDist(coord1, coord2):
     dist = 0
     for coord1_i,coord2_i in zip(coord1,coord2):
         dist += abs(coord1_i - coord2_i)
     return dist
 
+# Function to generate a white noise matrix with the defined width and hiehgt
 def generateWhiteNoise(width,height,difficulty):
     noise = [[r for r in range(width)] for i in range(height)]
 
@@ -19,7 +32,7 @@ def generateWhiteNoise(width,height,difficulty):
 
     return noise
 
-# Def function to move pieces on a board
+# Function to move pieces on a board
 def move_piece(state_tuple,rows,cols,choosen_piece,direction):
         state = list(state_tuple)
         dir_correct = -1 if (direction == 'left' or direction == 'up') else 1 # -1 to move to th or up because of how the coords work
