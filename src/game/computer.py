@@ -180,16 +180,24 @@ def iterative_dfs(start_board,rows,cols):
 
 # Evaluation Function Used
 def evaluation_function(info_tuple, rows, cols):
-    board = info_tuple[0]
-    result = 0
-    piece_colors = []
-    distance_pieces=[]
-    for piece in board:
-        piece_colors.append(piece.color)
 
+    # Definying a point system
+    result = 0
+
+    # Getting the board
+    board = info_tuple[0]
+
+    # test if the number of pieces decreased
+    num_pieces = len(board)
+    
+    distance_pieces=[] # Calculate the distances between all pieces of the same color
+    for piece in board:
+
+        # test for smaller size of pieces
         min_x, max_x = 0, 1000
         min_y, max_y = 0, 1000
         for coord in piece.coords:
+            # test for smaller size of pieces
             if coord[0] < min_x:
                 min_x = coord[0]
             elif coord[0] > max_x:
@@ -200,18 +208,29 @@ def evaluation_function(info_tuple, rows, cols):
                 max_x = coord[1]
 
         # Size of pieces plays a negative impact in result, this is to prevent soft blocks
-        result -= (max_x-min_x)
-        result -= (max_y-min_y)
+        result += 5*(max_x-min_x)
+        result += 5*(max_y-min_y) # PLEASE DON'T FORGET TO NORMALIZE
 
+          # Test for pieces closer to the edges
+        result += 2*min(min_x,rows-max_x)
+        result += 2*min(min_y,rows-max_y) # PLEASE DON'T FORGET TO NORMALIZE
+
+        # test for distance of pieces
         for piece2 in board:
             if piece == piece2:
                 continue
+            elif piece.color != piece2.color:
+                continue
             distance_pieces.append(piece.calculate_dist(piece2))
 
-    result -= len(piece_colors) # number of pieces on board have negative impact on result
+    # Calculating the result   
 
-    # Calculate distance form pieces of the same color TODO
-    return -1
+    result += 10*num_pieces # since we are trying to minimize the points the fewer the pieces the better! WILL NEED NORMLIZATION
+
+    for dist in distance_pieces:
+        result += dist
+
+    return result
 
 
 # Greedy Seach Algorithm
