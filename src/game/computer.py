@@ -13,6 +13,7 @@ import copy
 from .utils import move_piece
 from queue import PriorityQueue
 import time
+import os, psutil
 
 # Wrapper Function to call the proper A.I. algorithm when in a coputer game
 def computer_move_cal(board_pieces, board_height, board_width, algorithm):
@@ -21,7 +22,7 @@ def computer_move_cal(board_pieces, board_height, board_width, algorithm):
     board_copy = copy.deepcopy(board_pieces)
 
     # Measure time it took from algorithm to run
-    start = time.time()
+    #start = time.time()
 
     # Choose the algorithm
     if algorithm == "bfs":
@@ -38,11 +39,11 @@ def computer_move_cal(board_pieces, board_height, board_width, algorithm):
         result = dfs(board_copy, board_width, board_height)
 
     # Calculate time and print on screen
-    end = time.time()
-    print("Time running:")
-    print(end - start)
-    print("number of nodes visited:")
-    print(len(result[1]))
+    #end = time.time()
+    #print("Time running:")
+    #print(end - start)
+    #print("number of nodes visited:")
+    #print(len(result[1]))
 
     # Return the list of movements it found at the end
     return result[0]
@@ -78,12 +79,20 @@ def bfs(start_board, rows, cols):
     while queue:
         state, moves = queue.popleft()
         if is_goal_state(state):
+            #print("amount of ram used:")
+            #process = psutil.Process(os.getpid())
+            #print(process.memory_info().rss)  # in bytes 
             return (moves, visited_boards)
         for new_state, new_moves in generate_states(state, moves):
             queue.append([new_state, new_moves])
         if not queue:
+            #print("amount of ram used:")
+            #process = psutil.Process(os.getpid())
+            #print(process.memory_info().rss)  # in bytes 
             return moves
-
+    #print("amount of ram used:")
+    #process = psutil.Process(os.getpid())
+    #print(process.memory_info().rss)  # in bytes 
     return ([],visited_boards) # If a list of moves to win the game can't be found return an empty list (this means the compute gave up on the game)
 
 # DFS function
@@ -95,7 +104,7 @@ def dfs(start_board, rows, cols):
     # Define stack for DFS
     stack = [(start_board,[])]
 
-    # Define fucnction to generate new states
+    # Define function to generate new states
     def generate_states(state, moves):
         new_states = []
         for i in range(len(state)):
@@ -111,12 +120,21 @@ def dfs(start_board, rows, cols):
     while stack:
         state, moves = stack.pop()
         if is_goal_state(state):
+            #print("amount of ram used:")
+            #process = psutil.Process(os.getpid())
+            #print(process.memory_info().rss)  # in bytes 
             return (moves,visited_boards)
         for new_state, new_moves in generate_states(state, moves):
             stack.append([new_state, new_moves])
         if not stack:
+            #print("amount of ram used:")
+            #process = psutil.Process(os.getpid())
+            #print(process.memory_info().rss)  # in bytes 
             return (moves,visited_boards)
 
+    #print("amount of ram used:")
+    #process = psutil.Process(os.getpid())
+    #print(process.memory_info().rss)  # in bytes 
     return ([],visited_boards) # If a list of moves to win the game can't be found return an empty list (this means the compute gave up on the game)
 
 # Iterative deepening search algorithm
@@ -178,6 +196,9 @@ def iterative_dfs(start_board,rows,cols):
         visited_boards.append(result[1]) # Add to visited boards for evaluation
         
         if result is not None:
+            #print("amount of ram used:")
+            #process = psutil.Process(os.getpid())
+            #print(process.memory_info().rss)  # in bytes 
             return result
         
         if depth > 100: # To prevent an infinite loop the max depth of the search allowed is 100
@@ -186,6 +207,9 @@ def iterative_dfs(start_board,rows,cols):
         # Increment the depth and continue to the next iteration of the loop.
         depth += 1
 
+    #print("amount of ram used:")
+    #process = psutil.Process(os.getpid())
+    #print(process.memory_info().rss)  # in bytes 
     return ([],visited_boards) # If a list of moves to win the game can't be found return an empty list (this means the compute gave up on the game)
 
 #####################################
@@ -194,13 +218,13 @@ def iterative_dfs(start_board,rows,cols):
 #                                   #
 #####################################
 
-# Past evaluation functions
-''' 
-def evaluation_function(info_tuple):
+# Evaluation functions
+'''
+def evaluation_function(info_tuple, rows, cols):
     board = info_tuple[0]
     return len(board)
 
-def evaluation_function(info_tuple):
+def evaluation_function(info_tuple, rows, cols):
 
     result = 0
 
@@ -219,7 +243,8 @@ def evaluation_function(info_tuple):
         result += dist
     
     return result 
-
+'''
+# Choosen Evaluation function
 def evaluation_function(info_tuple, rows, cols):
 
     result = 0
@@ -251,8 +276,6 @@ def evaluation_function(info_tuple, rows, cols):
 
     return result
 '''
-
-# Evaluation Function Used
 def evaluation_function(info_tuple, rows, cols):
 
     # Definying a point system
@@ -305,7 +328,7 @@ def evaluation_function(info_tuple, rows, cols):
         result += dist
 
     return result
-
+    '''
 
 # Greedy Seach Algorithm
 def greedy_search(start_board, rows, cols):
@@ -339,6 +362,9 @@ def greedy_search(start_board, rows, cols):
         best_next_state = min(next_states, key=lambda x: evaluation_function(x,rows,cols))
         current_state = best_next_state
 
+    #print("amount of ram used:")
+    #process = psutil.Process(os.getpid())
+    #print(process.memory_info().rss)  # in bytes 
     return (current_state[1],visited_boards) # returns a list of move even if a game can't be won
 
 # A Start Algorithm
@@ -370,9 +396,15 @@ def a_star(start_board, rows, cols):
     while not priority_queue.empty():
         score, state, moves = priority_queue.get()
         if is_goal_state(state):
+            #print("amount of ram used:")
+            #process = psutil.Process(os.getpid())
+            #print(process.memory_info().rss)  # in bytes 
             return (moves,visited_boards)
         for new_priority, new_state, new_moves in generate_states(state, moves):
             # Add the new state to the priority queue with calculated priority
             priority_queue.put((new_priority, new_state, new_moves))
 
+    #print("amount of ram used:")
+    #process = psutil.Process(os.getpid())
+    #print(process.memory_info().rss)  # in bytes 
     return ([],visited_boards) # If a list of moves to win the game can't be found return an empty list (this means the compute gave up on the game)
