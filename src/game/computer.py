@@ -12,12 +12,16 @@ from collections import deque
 import copy
 from .utils import move_piece
 from queue import PriorityQueue
+import time
 
 # Wrapper Function to call the proper A.I. algorithm when in a coputer game
 def computer_move_cal(board_pieces, board_height, board_width, algorithm):
 
     # Make a copy of the board to nopt break the original
     board_copy = copy.deepcopy(board_pieces)
+
+    # Measure time it took from algorithm to run
+    start = time.time()
 
     # Choose the algorithm
     if algorithm == "bfs":
@@ -33,8 +37,15 @@ def computer_move_cal(board_pieces, board_height, board_width, algorithm):
     else:
         result = dfs(board_copy, board_width, board_height)
 
+    # Calculate time and print on screen
+    end = time.time()
+    print("Time running:")
+    print(end - start)
+    print("number of nodes visited:")
+    print(len(result[1]))
+
     # Return the list of movements it found at the end
-    return result
+    return result[0]
 
 # Define function to check if a state is the goal state
 def is_goal_state(state):
@@ -67,13 +78,13 @@ def bfs(start_board, rows, cols):
     while queue:
         state, moves = queue.popleft()
         if is_goal_state(state):
-            return moves
+            return (moves, visited_boards)
         for new_state, new_moves in generate_states(state, moves):
             queue.append([new_state, new_moves])
         if not queue:
             return moves
 
-    return [] # If a list of moves to win the game can't be found return an empty list (this means the compute gave up on the game)
+    return ([],visited_boards) # If a list of moves to win the game can't be found return an empty list (this means the compute gave up on the game)
 
 # DFS function
 def dfs(start_board, rows, cols):
@@ -100,13 +111,13 @@ def dfs(start_board, rows, cols):
     while stack:
         state, moves = stack.pop()
         if is_goal_state(state):
-            return moves
+            return (moves,visited_boards)
         for new_state, new_moves in generate_states(state, moves):
             stack.append([new_state, new_moves])
         if not stack:
-            return moves
+            return (moves,visited_boards)
 
-    return [] # If a list of moves to win the game can't be found return an empty list (this means the compute gave up on the game)
+    return ([],visited_boards) # If a list of moves to win the game can't be found return an empty list (this means the compute gave up on the game)
 
 # Iterative deepening search algorithm
 def iterative_dfs(start_board,rows,cols):
@@ -114,6 +125,10 @@ def iterative_dfs(start_board,rows,cols):
     Function to perform an iterative depth-first search on the board.
     Takes three arguments: start_board, rows, cols.
     """
+
+    #function to remember num of visited states
+    visited_boards = []
+
     def depth_limited_dfs(start_board, rows, cols, depth):
         visited_boards = [sorted(start_board)]
         stack = [(start_board, [])]
@@ -124,7 +139,7 @@ def iterative_dfs(start_board,rows,cols):
             
             # If the popped state is the goal state, return the moves.
             if is_goal_state(state):
-                return moves
+                return (moves,visited_boards)
             
             # If the depth limit has been reached, continue to the next iteration.
             if len(moves) == depth:
@@ -160,6 +175,7 @@ def iterative_dfs(start_board,rows,cols):
     while True:    
         # Call depth_limited_dfs with the current depth.
         result = depth_limited_dfs(start_board, rows, cols, depth)
+        visited_boards.append(result[1]) # Add to visited boards for evaluation
         
         if result is not None:
             return result
@@ -170,7 +186,7 @@ def iterative_dfs(start_board,rows,cols):
         # Increment the depth and continue to the next iteration of the loop.
         depth += 1
 
-    return [] # If a list of moves to win the game can't be found return an empty list (this means the compute gave up on the game)
+    return ([],visited_boards) # If a list of moves to win the game can't be found return an empty list (this means the compute gave up on the game)
 
 #####################################
 #                                   #
@@ -265,7 +281,7 @@ def greedy_search(start_board, rows, cols):
         best_next_state = min(next_states, key=lambda x: evaluation_function(x,rows,cols))
         current_state = best_next_state
 
-    return current_state[1] # returns a list of move even if a game can't be won
+    return (current_state[1],visited_boards) # returns a list of move even if a game can't be won
 
 # A Start Algorithm
 def a_star(start_board, rows, cols):
@@ -296,9 +312,9 @@ def a_star(start_board, rows, cols):
     while not priority_queue.empty():
         score, state, moves = priority_queue.get()
         if is_goal_state(state):
-            return moves
+            return (moves,visited_boards)
         for new_priority, new_state, new_moves in generate_states(state, moves):
             # Add the new state to the priority queue with calculated priority
             priority_queue.put((new_priority, new_state, new_moves))
 
-    return [] # If a list of moves to win the game can't be found return an empty list (this means the compute gave up on the game)
+    return ([],visited_boards) # If a list of moves to win the game can't be found return an empty list (this means the compute gave up on the game)
