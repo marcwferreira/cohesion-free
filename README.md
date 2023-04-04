@@ -71,7 +71,7 @@ The strucure of the game goes as follows:
 | File         | Place      | Description |
 | ------------ | ---------- | ----------- |
 | main.py      | ./src      | Controls the flux of the game, it contains the menus and is reponsible for calling the game itself. |
-| utils.py     | ./src/game | Contains functions that auxiliates in the game functioning. e.g. a function that generates a noise map for random board generation |
+| utils.py     | ./src/game | Contains functions that assists in the game functioning. e.g. a function that generates a noise map for random board generation |
 | button.py    | ./src/game | Contains the implementation of the buttons used in the game |
 | constants.py | ./src/game | Responsible to gather all the constant needed in the code in a single file for easier organization and changes if necessary |
 | board.py     | ./src/game | Contains the representation and logic of the board needed in the game |
