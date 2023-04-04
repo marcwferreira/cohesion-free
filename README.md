@@ -45,7 +45,7 @@ The game can be started in these different ways:
 >
 > and run it with:
 > ```
-> ./cohesion_free.exe
+> ./Cohesion_free.exe
 > ```
 > &nbsp;
 
