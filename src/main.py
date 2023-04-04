@@ -108,10 +108,8 @@ def play_config():
                 if(computer):
                     if select_left_button.check_click():
                         bot_algorithm = bot_configs[(bot_configs.index(bot_algorithm)-1)%len(bot_configs)]
-                        print(bot_algorithm)
                     elif select_right_button.check_click():
                         bot_algorithm = bot_configs[(bot_configs.index(bot_algorithm)+1)%len(bot_configs)]   
-                        print(bot_algorithm) 
                 
                 # Different buttons for a random game or predefined board
                 if random_button.check_click():
@@ -189,8 +187,6 @@ def playing():
         board_sizes = board.get_board_size()
         board_pieces = board.get_pieces()
         move_list = computer_move_cal(board_pieces[:],board_sizes[0],board_sizes[1],bot_algorithm)
-        print("this is the result from bot:")
-        print(move_list)
 
     # Screen Loop
     while run:
@@ -232,11 +228,8 @@ def playing():
        
             # If it is a computer game, computer will make the next move
             if(computer):
-                print(move_list)
                 if len(move_list) > 0:
                     current_move = move_list.pop(0)
-                    #if current_move[0] == -1:
-                    #    print('game not possible anymore')
                     board.select_piece(current_move[0])
                     board.move_piece(current_move[1])
                     time.sleep(0.3)

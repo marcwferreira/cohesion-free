@@ -1,6 +1,6 @@
 PYTHON = python3
 
-.PHONY: game requirements
+.PHONY: requirements game
 
 RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(eval $(RUN_ARGS):;@:)
